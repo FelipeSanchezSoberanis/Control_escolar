@@ -1,19 +1,19 @@
 package App;
 
+import java.util.List;
+
 public class App {
     public static void main(String[] args) {
         ControlEscolar.getData();
+        List<String[]> promediosTotales = ControlEscolar.getPromedioTotalAlumnos();
+        List<String[]> promediosParciales = ControlEscolar.getPromedioParcialAlumnos();
 
-        for (Alumno alumno : ControlEscolar.alumnos) {
-            System.out.println("Matricula: " + Integer.toString(alumno.getMatricula()) + " | Nombre completo: " + alumno.getNombre() + " " + alumno.getApellido());
+        for (String[] promedio : promediosTotales) {
+            System.out.println("Matricula: " + promedio[0] + " | Promedio Total: " + promedio[1]);
         }
 
-        for (Materia materia : ControlEscolar.materias) {
-            System.out.println("Clave: " + Integer.toString(materia.getClave()) + " | Nombre: " + materia.getNombre() + " | Créditos: " + Integer.toString(materia.getCreditos()));
-        }
-
-        for (Calificacion calificacion : ControlEscolar.calificaciones) {
-            System.out.println("Clave: " + Integer.toString(calificacion.getClave()) + " | Matricula: " + Integer.toString(calificacion.getMatricula()) + " | Calificacion: " + Integer.toString(calificacion.getCalificacion()));
+        for (String[] promedio : promediosParciales) {
+            System.out.println("Matricula: " + promedio[0] + " | Promedio Parcial: " + promedio[1]);
         }
     }
 }

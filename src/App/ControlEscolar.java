@@ -10,10 +10,11 @@ import java.util.List;
 
 public class ControlEscolar {
     private static Connection connection = null;
-    public static List<Alumno> alumnos = new ArrayList<Alumno>();
-    public static List<Materia> materias = new ArrayList<Materia>();
-    public static List<Calificacion> calificaciones = new ArrayList<Calificacion>();
+    private static List<Alumno> alumnos = new ArrayList<Alumno>();
+    private static List<Materia> materias = new ArrayList<Materia>();
+    private static List<Calificacion> calificaciones = new ArrayList<Calificacion>();
 
+    // Obtener la información de inicio
     public static void getData() {
         openConnection();
 
@@ -127,5 +128,149 @@ public class ControlEscolar {
         } if (success) {
             System.out.println("Conexión con la base de datos cerrada con éxito.");
         }
+    }
+
+    // Regresar la lista de todos los alumnos
+    public static List<Alumno> getAlumnos() { return new ArrayList<>(alumnos); }
+
+    // Regresar todas las materias
+    public static List<Materia> getMaterias() { return new ArrayList<>(materias); }
+
+    // Regresar todas las calificaciones
+    public static List<Calificacion> getCalificaciones() { return new ArrayList<>(calificaciones); }
+
+    // Agregar un alumno nuevo
+    public static void addAlumno(int matricula, String nombre, String apellido) {
+        String query;
+
+        openConnection();
+
+        query = "INSERT INTO alumnos (matricula, nombre, apellido) VALUES (" + Integer.toString(matricula) + ", \"" + nombre + "\", \"" + apellido + "\");";
+        System.out.println(query);
+
+        // #region Agregar el alumno a la tabla de alumnos
+        boolean success = true;
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            success = false;
+
+            System.out.println("Error al agregar el alumno a la base de datos.");
+        } if (success) {
+            alumnos.add(new Alumno(matricula, nombre, apellido));
+
+            System.out.println("Alumno agregado con éxito a la base de datos.");
+        }
+        // #endregion
+
+        // #region Agregar las calificaciones nulas al nuevo alumnos
+        success = true;
+        try {
+            Statement statement = connection.createStatement();
+
+            for (Materia materia : materias) {
+                query = "INSERT INTO calificaciones (matricula, clave, calificacion) VALUES (" + Integer.toString(matricula) + ", " + Integer.toString(materia.getClave()) + ", " + Integer.toString(-1) + ");";
+
+                statement.executeUpdate(query);
+            }
+        } catch (SQLException e) {
+            success = false;
+
+            System.out.println("Error al agregar las calificaciones del alumno nuevo.");
+        } if (success) {
+            for (Materia materia : materias) {
+                calificaciones.add(new Calificacion(matricula, materia.getClave(), -1));
+            }
+
+            System.out.println("Calificaciones del alumno nuevo agregadas con éxito.");
+        }
+        // #endregion
+
+        closeConnection();
+    }
+
+    // Actualizar calificacion
+    public static void updateCalificacion(int matricula, int clave, int calificacion) {
+        String query;
+
+        openConnection();
+
+        query = "UPDATE calificaciones SET calificacion = " + Integer.toString(calificacion) + " WHERE matricula = " + Integer.toString(matricula) + " AND clave = " + Integer.toString(clave) + ";";
+
+        boolean success = true;
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
+            success = false;
+
+            System.out.println("Error al actualizar la calificación.");
+        } if (success) {
+            System.out.println("Calificación actualizada con éxito.");
+        }
+
+        closeConnection();
+    }
+
+    // Obtener el promedio de los alumnos con todas las materias cursadas
+    public static List<String[]> getPromedioTotalAlumnos() {
+        List<String[]> valoresFinales = new ArrayList<String[]>();
+
+        openConnection();
+
+        boolean success = true;
+        try {
+            String query = "SELECT matricula, Avg(calificacion) as promedio FROM calificaciones WHERE calificacion != -1 GROUP BY matricula;";
+
+            System.out.println(query);
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String[] valores = {"1", "1"};
+                valores[0] = resultSet.getString("matricula");
+                valores[1] = resultSet.getString("promedio");
+                valoresFinales.add(valores);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener los promedios total de los alumnos.");
+        } if (success) {
+            System.out.println("Promedios totales de los alumnos obtenidos con éxito.");
+        }
+
+        closeConnection();
+
+        return valoresFinales;
+    }
+
+    public static List<String[]> getPromedioParcialAlumnos() {
+        List<String[]> valoresFinales = new ArrayList<String[]>();
+
+        openConnection();
+
+        boolean success = true;
+        try {
+            String query = "SELECT matricula, Avg(calificacion) as promedio FROM calificaciones WHERE calificacion >= 70 GROUP BY matricula;";
+
+            System.out.println(query);
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String[] valores = {"1", "1"};
+                valores[0] = resultSet.getString("matricula");
+                valores[1] = resultSet.getString("promedio");
+                valoresFinales.add(valores);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener los promedios total de los alumnos.");
+        } if (success) {
+            System.out.println("Promedios totales de los alumnos obtenidos con éxito.");
+        }
+
+        closeConnection();
+
+        return valoresFinales;
     }
 }
