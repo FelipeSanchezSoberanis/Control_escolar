@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import jdk.jshell.StatementSnippet;
-
 public class ControlEscolar {
     private static Connection connection = null;
     private static List<Alumno> alumnos = new ArrayList<Alumno>();
