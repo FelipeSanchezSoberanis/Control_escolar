@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdk.jshell.StatementSnippet;
+
 public class ControlEscolar {
     private static Connection connection = null;
     private static List<Alumno> alumnos = new ArrayList<Alumno>();
@@ -250,6 +252,7 @@ public class ControlEscolar {
         return valoresFinales;
     }
 
+    // Obtener el promedio de los alumnos sin materias reprobadas
     public static List<String[]> getPromedioParcialAlumnos() {
         List<String[]> valoresFinales = new ArrayList<String[]>();
 
@@ -276,6 +279,64 @@ public class ControlEscolar {
         }
 
         closeConnection();
+
+        return valoresFinales;
+    }
+
+    // Obtener alumnos con sus respectivas materias reprobadas
+    public static List<String[]> getAlumnosYReprobadas() {
+        List<String[]> valoresFinales = new ArrayList<String[]>();
+        String query = "SELECT matricula, clave FROM calificaciones WHERE calificacion != -1 AND calificacion < 70 GROUP BY matricula, clave;";
+
+        boolean success = true;
+        try {
+            openConnection();
+
+            Statement Statement = connection.createStatement();
+            ResultSet resultSet = Statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                String[] valores = {resultSet.getString("matricula"), resultSet.getString("clave")};
+                valoresFinales.add(valores);
+            }
+
+            closeConnection();
+        } catch (SQLException e) {
+            success = false;
+
+            System.out.println("Problema al obtener alumnos con sus materia reprobadas.");
+        } if (success) {
+           System.out.println("Alumnos con sus materia reprobadas obtenidos exitosamente.");
+        }
+
+        return valoresFinales;
+    }
+
+    // Obtener cantidad de extraordinarios por materia
+    public static List<String[]> getExtraordinarios() {
+        List<String[]> valoresFinales = new ArrayList<String[]>();
+        String query = "SELECT clave, count(calificacion) as extraordinarios FROM calificaciones WHERE calificacion != -1 AND calificacion < 70 GROUP BY clave;";
+
+        boolean success = true;
+        try {
+            openConnection();
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                String[] valores = {resultSet.getString("clave"), resultSet.getString("extraordinarios")};
+                valoresFinales.add(valores);
+            }
+
+            closeConnection();
+        } catch (Exception e) {
+            success = false;
+
+            System.out.println("Problema al obtener los extraordinarios de la base de datos.");
+        } if (success) {
+            System.out.println("Extraordinarios obtenidos con éxito de la base de datos.");
+        }
 
         return valoresFinales;
     }
