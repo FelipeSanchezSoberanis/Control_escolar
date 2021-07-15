@@ -207,6 +207,12 @@ public class ControlEscolar {
 
             System.out.println("Error al actualizar la calificación.");
         } if (success) {
+            for (int i = 0; i < calificaciones.size(); i++) {
+                if (calificaciones.get(i).getMatricula() == matricula && calificaciones.get(i).getClave() == clave) {
+                    calificaciones.set(i, new Calificacion(matricula, clave, calificacion));
+                }
+            }
+
             System.out.println("Calificación actualizada con éxito.");
         }
 

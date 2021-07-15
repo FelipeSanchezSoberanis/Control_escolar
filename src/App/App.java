@@ -15,5 +15,7 @@ public class App {
         for (String[] promedio : promediosParciales) {
             System.out.println("Matricula: " + promedio[0] + " | Promedio Parcial: " + promedio[1]);
         }
+
+        ControlEscolar.updateCalificacion(2851, 97346, 100);
     }
 }
