@@ -6,11 +6,12 @@
 package App;
 
 import java.awt.Color;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -122,7 +123,111 @@ class AltaDeAlumnosDocumentListener implements DocumentListener{
 }
 
 public class appWindow extends javax.swing.JFrame {
+    void startUpdateCalificaciones() {
+        jBtnAsignarCalificacion.setEnabled(false);
 
+        List<Calificacion> calificacionesEditables = new ArrayList<Calificacion>();
+
+        List<Calificacion> calificaciones = new ArrayList<Calificacion>();
+        calificaciones = ControlEscolar.getCalificaciones();
+
+        for (Calificacion calificacion : calificaciones) {
+            if (calificacion.getCalificacion() == -1){
+                calificacionesEditables.add(calificacion);
+            }
+        }
+
+        jCmbBoxMatricula.removeAllItems();
+        jCmbBoxClave.removeAllItems();
+
+        String newMatricula = "";
+        String oldMatricula = "";
+        for (Calificacion calificacion : calificacionesEditables) {
+            newMatricula = Integer.toString(calificacion.getMatricula());
+            if (!newMatricula.equals(oldMatricula)) {
+                jCmbBoxMatricula.addItem(newMatricula);
+            }
+            oldMatricula = newMatricula;
+        }
+
+        for (Calificacion calificacion : calificacionesEditables) {
+            if (calificacion.getMatricula() == Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString())) {
+                jCmbBoxClave.addItem(Integer.toString(calificacion.getClave()));
+            }
+        }
+
+        jLblAsignarNombreAlumno.setText(ControlEscolar.getNombreByMatricula(Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString())));
+
+        jLblAsignarNombreMateria.setText(ControlEscolar.getNombreByClave(Integer.parseInt(jCmbBoxClave.getSelectedItem().toString())));
+
+        jCmbBoxMatricula.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                try {
+                    jCmbBoxClave.removeAllItems();
+                    for (Calificacion calificacion : calificacionesEditables) {
+                        if (calificacion.getMatricula() == Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString())) {
+                            jCmbBoxClave.addItem(Integer.toString(calificacion.getClave()));
+                        }
+                    }
+                    jLblAsignarNombreMateria.setText(ControlEscolar.getNombreByClave(Integer.parseInt(jCmbBoxClave.getSelectedItem().toString())));
+                    jLblAsignarNombreAlumno.setText(ControlEscolar.getNombreByMatricula(Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString())));
+                } catch (Exception exception) {
+
+                }
+            }
+        });
+
+        jCmbBoxClave.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                try {
+                    jLblAsignarNombreMateria.setText(ControlEscolar.getNombreByClave(Integer.parseInt(jCmbBoxClave.getSelectedItem().toString())));
+                } catch (Exception exception) {
+
+                }
+            }
+        });
+
+        jTxtFldCalificacion.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                checkValues();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                checkValues();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                checkValues();
+            }
+
+            void checkValues() {
+                int calificacion = -1;
+
+                boolean success = true;
+                try {
+                    calificacion = Integer.parseInt(jTxtFldCalificacion.getText());
+                } catch (Exception e) {
+                    success = false;
+
+                    jBtnAsignarCalificacion.setEnabled(false);
+                    jTxtFldCalificacion.setBorder(new LineBorder(Color.red));
+                } if (success) {
+                    if (calificacion >= 0 && calificacion <= 100) {
+                        jTxtFldCalificacion.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+                        jBtnAsignarCalificacion.setEnabled(true);
+                    } else {
+                        jTxtFldCalificacion.setBorder(new LineBorder(Color.red));
+                        jBtnAsignarCalificacion.setEnabled(false);
+                    }
+                }
+            }
+        });
+    }
     /**
      * Creates new form appWindow
      */
@@ -171,7 +276,15 @@ public class appWindow extends javax.swing.JFrame {
         jTxtFldAltaAlumnoApellido = new javax.swing.JTextField();
         jBtnAltaAlumno = new javax.swing.JButton();
         jPnlAsignarCalificaciones = new javax.swing.JPanel();
+        jCmbBoxMatricula = new javax.swing.JComboBox<>();
+        jCmbBoxClave = new javax.swing.JComboBox<>();
+        jTxtFldCalificacion = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLblAsignarNombreAlumno = new javax.swing.JLabel();
+        jLblAsignarNombreMateria = new javax.swing.JLabel();
+        jBtnAsignarCalificacion = new javax.swing.JButton();
         jPnlPromedioTotal = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTblPromediosTotales = new javax.swing.JTable();
@@ -316,27 +429,71 @@ public class appWindow extends javax.swing.JFrame {
                 .addGap(32, 32, 32))
         );
 
-        jPnlAsignarCalificaciones.setBackground(new java.awt.Color(255, 51, 102));
+        jLabel5.setText("Matricula");
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("Asignar calificaciones");
+        jLabel6.setText("Clave de materia");
+
+        jLabel7.setText("Calificacion");
+
+        jLblAsignarNombreAlumno.setText("Alumno");
+
+        jLblAsignarNombreMateria.setText("Materia");
+
+        jBtnAsignarCalificacion.setText("Asignar calificacion");
+        jBtnAsignarCalificacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnAsignarCalificacionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPnlAsignarCalificacionesLayout = new javax.swing.GroupLayout(jPnlAsignarCalificaciones);
         jPnlAsignarCalificaciones.setLayout(jPnlAsignarCalificacionesLayout);
         jPnlAsignarCalificacionesLayout.setHorizontalGroup(
             jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAsignarCalificacionesLayout.createSequentialGroup()
-                .addGap(177, 177, 177)
-                .addComponent(jLabel5)
-                .addContainerGap(177, Short.MAX_VALUE))
+                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPnlAsignarCalificacionesLayout.createSequentialGroup()
+                        .addGap(114, 114, 114)
+                        .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCmbBoxMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLblAsignarNombreAlumno))
+                        .addGap(52, 52, 52)
+                        .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPnlAsignarCalificacionesLayout.createSequentialGroup()
+                                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jCmbBoxClave, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6))
+                                .addGap(52, 52, 52)
+                                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jTxtFldCalificacion, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLblAsignarNombreMateria)))
+                    .addGroup(jPnlAsignarCalificacionesLayout.createSequentialGroup()
+                        .addGap(233, 233, 233)
+                        .addComponent(jBtnAsignarCalificacion)))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
         jPnlAsignarCalificacionesLayout.setVerticalGroup(
             jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAsignarCalificacionesLayout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(jLabel5)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addGap(113, 113, 113)
+                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jCmbBoxMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCmbBoxClave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTxtFldCalificacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPnlAsignarCalificacionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLblAsignarNombreAlumno)
+                    .addComponent(jLblAsignarNombreMateria))
+                .addGap(48, 48, 48)
+                .addComponent(jBtnAsignarCalificacion)
+                .addContainerGap(105, Short.MAX_VALUE))
         );
 
         jTblPromediosTotales.setModel(new javax.swing.table.DefaultTableModel(
@@ -647,6 +804,7 @@ public class appWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuAltaAlumnosMouseClicked
 
     private void jMenuAsignarCalificacionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuAsignarCalificacionesMouseClicked
+        // Hacer que el panel correcto sea visible
         this.jPnlHome.setVisible(false);
         this.jPnlMostrarAlumnos.setVisible(false);
         this.jPnlMostrarMaterias.setVisible(false);
@@ -656,6 +814,9 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlPromedioParcial.setVisible(false);
         this.jPnlAlumnosReprobadas.setVisible(false);
         this.jPnlExtraordinarios.setVisible(false);
+
+        startUpdateCalificaciones();
+
     }//GEN-LAST:event_jMenuAsignarCalificacionesMouseClicked
 
     private void jBtnAltaAlumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAltaAlumnoActionPerformed
@@ -665,6 +826,20 @@ public class appWindow extends javax.swing.JFrame {
 
         ControlEscolar.addAlumno(matricula, nombre, apellido);
     }//GEN-LAST:event_jBtnAltaAlumnoActionPerformed
+
+    private void jBtnAsignarCalificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAsignarCalificacionActionPerformed
+        int matricula;
+        int clave;
+        int calificacion;
+
+        matricula = Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString());
+        clave = Integer.parseInt(jCmbBoxClave.getSelectedItem().toString());
+        calificacion = Integer.parseInt(jTxtFldCalificacion.getText());
+
+        ControlEscolar.updateCalificacion(matricula, clave, calificacion);
+
+        startUpdateCalificaciones();
+    }//GEN-LAST:event_jBtnAsignarCalificacionActionPerformed
 
     private void jMenuMateriasActionPerformed(java.awt.event.ActionEvent evt) {
         // Hacer que la pestaña sea visible
@@ -857,11 +1032,18 @@ public class appWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBtnAltaAlumno;
+    private javax.swing.JButton jBtnAsignarCalificacion;
+    private javax.swing.JComboBox<String> jCmbBoxClave;
+    private javax.swing.JComboBox<String> jCmbBoxMatricula;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLblAsignarNombreAlumno;
+    private javax.swing.JLabel jLblAsignarNombreMateria;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenuAltaAlumnos;
@@ -897,5 +1079,6 @@ public class appWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTxtFldAltaAlumnoApellido;
     private javax.swing.JTextField jTxtFldAltaAlumnoMatricula;
     private javax.swing.JTextField jTxtFldAltaAlumnoNombre;
+    private javax.swing.JTextField jTxtFldCalificacion;
     // End of variables declaration//GEN-END:variables
 }

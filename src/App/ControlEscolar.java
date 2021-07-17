@@ -73,8 +73,8 @@ public class ControlEscolar {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                calificaciones.add(new Calificacion(resultSet.getInt("clave"),
-                                              resultSet.getInt("matricula"),
+                calificaciones.add(new Calificacion(resultSet.getInt("matricula"),
+                                              resultSet.getInt("clave"),
                                               resultSet.getInt("calificacion")));
             }
         } catch (SQLException e) {
@@ -212,6 +212,7 @@ public class ControlEscolar {
             success = false;
 
             System.out.println("Error al actualizar la calificación.");
+            JOptionPane.showMessageDialog(null, "Error al actualizar la calificación.");
         } if (success) {
             for (int i = 0; i < calificaciones.size(); i++) {
                 if (calificaciones.get(i).getMatricula() == matricula && calificaciones.get(i).getClave() == clave) {
@@ -220,6 +221,7 @@ public class ControlEscolar {
             }
 
             System.out.println("Calificación actualizada con éxito.");
+            JOptionPane.showMessageDialog(null, "Calificación actualizada con éxito.");
         }
 
         closeConnection();
