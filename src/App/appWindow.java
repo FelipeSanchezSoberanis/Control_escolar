@@ -5,14 +5,122 @@
  */
 package App;
 
+import java.awt.Color;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Usuario
  */
+class AltaDeAlumnosDocumentListener implements DocumentListener{
+    JTextField jTxtFldMatricula;
+    JTextField jTxtFldNombre;
+    JTextField jTxtFldApellido;
+    JButton jBtnDarDeAlta;
+
+    AltaDeAlumnosDocumentListener(JTextField matricula, JTextField nombre, JTextField apellido, JButton jBtnDarDeAlta) {
+        this.jTxtFldMatricula = matricula;
+        this.jTxtFldNombre = nombre;
+        this.jTxtFldApellido = apellido;
+        this.jBtnDarDeAlta = jBtnDarDeAlta;
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        checkValues();
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        checkValues();
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        checkValues();
+    }
+
+    void checkValues() {
+        // #region Verificación de la matricula
+        int matricula = -1;
+
+        boolean success1 = true;
+        try {
+            matricula = Integer.parseInt(jTxtFldMatricula.getText());
+        } catch (Exception e) {
+            success1 = false;
+
+            jTxtFldMatricula.setBorder(new LineBorder(Color.red));
+        } if (success1) {
+            if (matricula >= 0 && matricula <= 9999) {
+                jTxtFldMatricula.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+            } else {
+                jTxtFldMatricula.setBorder(new LineBorder(Color.red));
+                success1 = false;
+            }
+        }
+        // #endregion
+
+        // #region Verificacion del nombre
+        String nombre = "";
+
+        boolean success2 = true;
+        try {
+            nombre = jTxtFldNombre.getText();
+        } catch (Exception e) {
+            success2 = false;
+
+            jTxtFldNombre.setBorder(new LineBorder(Color.red));
+        } if (success2) {
+            if (!nombre.matches(".*[0-9]+.*") && nombre.length() > 0) {
+                jTxtFldNombre.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+            } else {
+                jTxtFldNombre.setBorder(new LineBorder(Color.red));
+                success2 = false;
+            }
+
+        }
+        // #endregion
+
+        // #region Velificacion del apellido
+        String apellido = "";
+
+        boolean success3 = true;
+        try {
+            apellido = jTxtFldApellido.getText();
+        } catch (Exception e) {
+            success3 = false;
+
+            jTxtFldApellido.setBorder(new LineBorder(Color.red));
+        } if (success3) {
+            if (!apellido.matches(".*[0-9]+.*") && apellido.length() > 0) {
+                jTxtFldApellido.setBorder(UIManager.getLookAndFeel().getDefaults().getBorder("TextField.border"));
+            } else {
+                jTxtFldApellido.setBorder(new LineBorder(Color.red));
+                success3 = false;
+            }
+
+        }
+        // #endregion
+
+        if (success1 && success2 && success3) {
+            jBtnDarDeAlta.setEnabled(true);
+        } else {
+            jBtnDarDeAlta.setEnabled(false);
+        }
+    }
+}
+
 public class appWindow extends javax.swing.JFrame {
 
     /**
@@ -33,6 +141,10 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlPromedioParcial.setVisible(false);
         this.jPnlAlumnosReprobadas.setVisible(false);
         this.jPnlExtraordinarios.setVisible(false);
+
+        this.jTxtFldAltaAlumnoMatricula.getDocument().addDocumentListener(new AltaDeAlumnosDocumentListener(jTxtFldAltaAlumnoMatricula, jTxtFldAltaAlumnoNombre, jTxtFldAltaAlumnoApellido, jBtnAltaAlumno));
+        this.jTxtFldAltaAlumnoNombre.getDocument().addDocumentListener(new AltaDeAlumnosDocumentListener(jTxtFldAltaAlumnoMatricula, jTxtFldAltaAlumnoNombre, jTxtFldAltaAlumnoApellido, jBtnAltaAlumno));
+        this.jTxtFldAltaAlumnoApellido.getDocument().addDocumentListener(new AltaDeAlumnosDocumentListener(jTxtFldAltaAlumnoMatricula, jTxtFldAltaAlumnoNombre, jTxtFldAltaAlumnoApellido, jBtnAltaAlumno));
     }
 
     /**
@@ -51,7 +163,13 @@ public class appWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTblMostrarAlumnos = new javax.swing.JTable();
         jPnlAltaDeAlumnos = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jTxtFldAltaAlumnoMatricula = new javax.swing.JTextField();
+        jTxtFldAltaAlumnoNombre = new javax.swing.JTextField();
+        jTxtFldAltaAlumnoApellido = new javax.swing.JTextField();
+        jBtnAltaAlumno = new javax.swing.JButton();
         jPnlAsignarCalificaciones = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jPnlPromedioTotal = new javax.swing.JPanel();
@@ -144,26 +262,58 @@ public class appWindow extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jPnlAltaDeAlumnos.setBackground(new java.awt.Color(255, 51, 102));
+        jLabel2.setText("Matricula");
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
-        jLabel4.setText("Alta de Alumnos");
+        jLabel3.setText("Nombre");
+
+        jLabel4.setText("Apellido");
+
+        jBtnAltaAlumno.setText("Dar de alta");
+        jBtnAltaAlumno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnAltaAlumnoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPnlAltaDeAlumnosLayout = new javax.swing.GroupLayout(jPnlAltaDeAlumnos);
         jPnlAltaDeAlumnos.setLayout(jPnlAltaDeAlumnosLayout);
         jPnlAltaDeAlumnosLayout.setHorizontalGroup(
             jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAltaDeAlumnosLayout.createSequentialGroup()
-                .addGap(214, 214, 214)
-                .addComponent(jLabel4)
-                .addContainerGap(207, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2))
+                .addGap(60, 60, 60)
+                .addGroup(jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jTxtFldAltaAlumnoNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                    .addComponent(jTxtFldAltaAlumnoApellido)
+                    .addComponent(jTxtFldAltaAlumnoMatricula))
+                .addGap(185, 185, 185))
+            .addGroup(jPnlAltaDeAlumnosLayout.createSequentialGroup()
+                .addGap(247, 247, 247)
+                .addComponent(jBtnAltaAlumno, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addGap(248, 248, 248))
         );
         jPnlAltaDeAlumnosLayout.setVerticalGroup(
             jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAltaDeAlumnosLayout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(jLabel4)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addGap(78, 78, 78)
+                .addGroup(jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTxtFldAltaAlumnoMatricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(47, 47, 47)
+                .addGroup(jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jTxtFldAltaAlumnoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addGroup(jPnlAltaDeAlumnosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTxtFldAltaAlumnoApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addComponent(jBtnAltaAlumno)
+                .addGap(32, 32, 32))
         );
 
         jPnlAsignarCalificaciones.setBackground(new java.awt.Color(255, 51, 102));
@@ -482,6 +632,7 @@ public class appWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAlumnosActionPerformed
 
     private void jMenuAltaAlumnosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuAltaAlumnosMouseClicked
+        // Hacer que el panel correcto sea visible
         this.jPnlHome.setVisible(false);
         this.jPnlMostrarAlumnos.setVisible(false);
         this.jPnlMostrarMaterias.setVisible(false);
@@ -491,6 +642,8 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlPromedioParcial.setVisible(false);
         this.jPnlAlumnosReprobadas.setVisible(false);
         this.jPnlExtraordinarios.setVisible(false);
+
+        jBtnAltaAlumno.setEnabled(false);
     }//GEN-LAST:event_jMenuAltaAlumnosMouseClicked
 
     private void jMenuAsignarCalificacionesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuAsignarCalificacionesMouseClicked
@@ -504,6 +657,14 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlAlumnosReprobadas.setVisible(false);
         this.jPnlExtraordinarios.setVisible(false);
     }//GEN-LAST:event_jMenuAsignarCalificacionesMouseClicked
+
+    private void jBtnAltaAlumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAltaAlumnoActionPerformed
+        int matricula = Integer.parseInt(jTxtFldAltaAlumnoMatricula.getText());
+        String nombre = jTxtFldAltaAlumnoNombre.getText();
+        String apellido = jTxtFldAltaAlumnoApellido.getText();
+
+        ControlEscolar.addAlumno(matricula, nombre, apellido);
+    }//GEN-LAST:event_jBtnAltaAlumnoActionPerformed
 
     private void jMenuMateriasActionPerformed(java.awt.event.ActionEvent evt) {
         // Hacer que la pestaña sea visible
@@ -695,7 +856,10 @@ public class appWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jBtnAltaAlumno;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JMenu jMenu3;
@@ -730,5 +894,8 @@ public class appWindow extends javax.swing.JFrame {
     private javax.swing.JTable jTblMostrarMaterias;
     private javax.swing.JTable jTblPromediosParciales;
     private javax.swing.JTable jTblPromediosTotales;
+    private javax.swing.JTextField jTxtFldAltaAlumnoApellido;
+    private javax.swing.JTextField jTxtFldAltaAlumnoMatricula;
+    private javax.swing.JTextField jTxtFldAltaAlumnoNombre;
     // End of variables declaration//GEN-END:variables
 }

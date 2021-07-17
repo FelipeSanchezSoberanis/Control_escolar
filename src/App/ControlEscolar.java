@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 public class ControlEscolar {
     private static Connection connection = null;
     private static List<Alumno> alumnos = new ArrayList<Alumno>();
@@ -157,10 +159,12 @@ public class ControlEscolar {
             success = false;
 
             System.out.println("Error al agregar el alumno a la base de datos.");
+            JOptionPane.showMessageDialog(null, "Error al agregar el alumno a la base de datos.");
         } if (success) {
             alumnos.add(new Alumno(matricula, nombre, apellido));
 
             System.out.println("Alumno agregado con éxito a la base de datos.");
+            JOptionPane.showMessageDialog(null, "Alumno agregado con éxito a la base de datos.");
         }
         // #endregion
 
@@ -178,12 +182,14 @@ public class ControlEscolar {
             success = false;
 
             System.out.println("Error al agregar las calificaciones del alumno nuevo.");
+            JOptionPane.showMessageDialog(null, "Error al agregar las calificaciones del alumno nuevo.");
         } if (success) {
             for (Materia materia : materias) {
                 calificaciones.add(new Calificacion(matricula, materia.getClave(), -1));
             }
 
             System.out.println("Calificaciones del alumno nuevo agregadas con éxito.");
+            JOptionPane.showMessageDialog(null, "Calificaciones del alumno nuevo agregadas con éxito.");
         }
         // #endregion
 
