@@ -338,4 +338,27 @@ public class ControlEscolar {
 
         return valoresFinales;
     }
+
+    // Obtener nombre completo con la matrícula
+    public static String getNombreByMatricula(int matricula) {
+        for (Alumno alumno : alumnos) {
+            if (alumno.getMatricula() == matricula) {
+                String res = alumno.getNombre() + " " + alumno.getApellido();
+                return res;
+            }
+        }
+        return "error";
+    }
+
+    // Obtener el nombre de la materia con su clave
+    public static String getNombreByClave(int clave) {
+        for (Materia materia : materias) {
+            if (materia.getClave() == clave) {
+                return materia.getNombre();
+            }
+        }
+        return "error";
+    }
+
+
 }

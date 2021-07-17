@@ -7,9 +7,7 @@ package App;
 
 import java.util.List;
 
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -63,9 +61,11 @@ public class appWindow extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTblPromediosParciales = new javax.swing.JTable();
         jPnlAlumnosReprobadas = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTblAlumnosReprobadas = new javax.swing.JTable();
         jPnlExtraordinarios = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTblExtraordinarios = new javax.swing.JTable();
         jPnlHome = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -249,51 +249,66 @@ public class appWindow extends javax.swing.JFrame {
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jPnlAlumnosReprobadas.setBackground(new java.awt.Color(255, 51, 102));
         jPnlAlumnosReprobadas.setPreferredSize(new java.awt.Dimension(640, 360));
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Alumnos Reprobadas");
+        jTblAlumnosReprobadas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane5.setViewportView(jTblAlumnosReprobadas);
 
         javax.swing.GroupLayout jPnlAlumnosReprobadasLayout = new javax.swing.GroupLayout(jPnlAlumnosReprobadas);
         jPnlAlumnosReprobadas.setLayout(jPnlAlumnosReprobadasLayout);
         jPnlAlumnosReprobadasLayout.setHorizontalGroup(
             jPnlAlumnosReprobadasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAlumnosReprobadasLayout.createSequentialGroup()
-                .addGap(178, 178, 178)
-                .addComponent(jLabel8)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addGap(94, 94, 94)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(94, Short.MAX_VALUE))
         );
         jPnlAlumnosReprobadasLayout.setVerticalGroup(
             jPnlAlumnosReprobadasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlAlumnosReprobadasLayout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(jLabel8)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        jPnlExtraordinarios.setBackground(new java.awt.Color(255, 51, 102));
-
-        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel9.setText("Extraordinarios");
+        jTblExtraordinarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane6.setViewportView(jTblExtraordinarios);
 
         javax.swing.GroupLayout jPnlExtraordinariosLayout = new javax.swing.GroupLayout(jPnlExtraordinarios);
         jPnlExtraordinarios.setLayout(jPnlExtraordinariosLayout);
         jPnlExtraordinariosLayout.setHorizontalGroup(
             jPnlExtraordinariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlExtraordinariosLayout.createSequentialGroup()
-                .addGap(219, 219, 219)
-                .addComponent(jLabel9)
-                .addContainerGap(218, Short.MAX_VALUE))
+                .addGap(94, 94, 94)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(94, Short.MAX_VALUE))
         );
         jPnlExtraordinariosLayout.setVerticalGroup(
             jPnlExtraordinariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPnlExtraordinariosLayout.createSequentialGroup()
-                .addGap(162, 162, 162)
-                .addComponent(jLabel9)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
@@ -536,7 +551,7 @@ public class appWindow extends javax.swing.JFrame {
         List<String[]> promedios = ControlEscolar.getPromedioTotalAlumnos();
         promedios.sort((o1, o2) -> o1[0].compareTo(o2[0]));
 
-        String[] columnNames = {"Matricula", "Promedio"};
+        String[] columnNames = {"Matricula", "Nombre", "Promedio"};
 
         DefaultTableModel defaultTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -544,7 +559,8 @@ public class appWindow extends javax.swing.JFrame {
         };
 
         for (String[] string : promedios) {
-            defaultTableModel.addRow(new Object[] {string[0], string[1]});
+            String nombreCompleto = ControlEscolar.getNombreByMatricula(Integer.parseInt(string[0]));
+            defaultTableModel.addRow(new Object[] {string[0], nombreCompleto, string[1]});
         }
 
         jTblPromediosTotales.setModel(defaultTableModel);
@@ -565,7 +581,7 @@ public class appWindow extends javax.swing.JFrame {
         List<String[]> promedios = ControlEscolar.getPromedioParcialAlumnos();
         promedios.sort((o1, o2) -> o1[0].compareTo(o2[0]));
 
-        String[] columnNames = {"Matricula", "Promedio"};
+        String[] columnNames = {"Matricula", "Nombre", "Promedio"};
 
         DefaultTableModel defaultTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -573,13 +589,15 @@ public class appWindow extends javax.swing.JFrame {
         };
 
         for (String[] string : promedios) {
-            defaultTableModel.addRow(new Object[] {string[0], string[1]});
+            String nombreCompleto = ControlEscolar.getNombreByMatricula(Integer.parseInt(string[0]));
+            defaultTableModel.addRow(new Object[] {string[0], nombreCompleto, string[1]});
         }
 
         jTblPromediosParciales.setModel(defaultTableModel);
     }
 
     private void jMenuItemAlumnosReprobadasActionPerformed(java.awt.event.ActionEvent evt) {
+        // Hacer que la tab correcta se muestre
         this.jPnlHome.setVisible(false);
         this.jPnlMostrarAlumnos.setVisible(false);
         this.jPnlMostrarMaterias.setVisible(false);
@@ -589,9 +607,29 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlPromedioParcial.setVisible(false);
         this.jPnlAlumnosReprobadas.setVisible(true);
         this.jPnlExtraordinarios.setVisible(false);
+
+        // Poner información en la tabla
+        List<String[]> alumnosConReprobadas = ControlEscolar.getAlumnosYReprobadas();
+        alumnosConReprobadas.sort((o1, o2) -> o1[0].compareTo(o2[0]));
+
+        String[] columnNames = {"Matricula", "Nombre", "Clave", "Materia"};
+
+        DefaultTableModel defaultTableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; };
+        };
+
+        for (String[] string : alumnosConReprobadas) {
+            String nombreAlumno = ControlEscolar.getNombreByMatricula(Integer.parseInt(string[0]));
+            String nombreMateria = ControlEscolar.getNombreByClave(Integer.parseInt(string[1]));
+            defaultTableModel.addRow(new Object[] {string[0], nombreAlumno, string[1], nombreMateria});
+        }
+
+        jTblAlumnosReprobadas.setModel(defaultTableModel);
     }
 
     private void jMenuItemExtraordinariosActionPerformed(java.awt.event.ActionEvent evt) {
+        // Hacer la tab correcta se muestre
         this.jPnlHome.setVisible(false);
         this.jPnlMostrarAlumnos.setVisible(false);
         this.jPnlMostrarMaterias.setVisible(false);
@@ -601,6 +639,24 @@ public class appWindow extends javax.swing.JFrame {
         this.jPnlPromedioParcial.setVisible(false);
         this.jPnlAlumnosReprobadas.setVisible(false);
         this.jPnlExtraordinarios.setVisible(true);
+
+        // Poner información en la tabla
+        List<String[]> extraordinarios = ControlEscolar.getExtraordinarios();
+        extraordinarios.sort((o1, o2) -> o1[0].compareTo(o1[0]));
+
+        String[] columnNames = {"Clave", "Nombre", "Extraordinarios"};
+
+        DefaultTableModel defaultTableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; };
+        };
+
+        for (String[] string : extraordinarios) {
+            String nombreMateria = ControlEscolar.getNombreByClave(Integer.parseInt(string[0]));
+            defaultTableModel.addRow(new Object[] {string[0], nombreMateria, string[1]});
+        }
+
+        jTblExtraordinarios.setModel(defaultTableModel);
     }
 
     /**
@@ -642,8 +698,6 @@ public class appWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenuAltaAlumnos;
@@ -668,6 +722,10 @@ public class appWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTable jTblAlumnosReprobadas;
+    private javax.swing.JTable jTblExtraordinarios;
     private javax.swing.JTable jTblMostrarAlumnos;
     private javax.swing.JTable jTblMostrarMaterias;
     private javax.swing.JTable jTblPromediosParciales;
