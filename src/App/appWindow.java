@@ -126,6 +126,8 @@ public class appWindow extends javax.swing.JFrame {
     void startUpdateCalificaciones() {
         jBtnAsignarCalificacion.setEnabled(false);
 
+        jTxtFldCalificacion.setText("");
+
         List<Calificacion> calificacionesEditables = new ArrayList<Calificacion>();
 
         List<Calificacion> calificaciones = new ArrayList<Calificacion>();
@@ -149,6 +151,8 @@ public class appWindow extends javax.swing.JFrame {
             }
             oldMatricula = newMatricula;
         }
+
+        jCmbBoxClave.removeAllItems();
 
         for (Calificacion calificacion : calificacionesEditables) {
             if (calificacion.getMatricula() == Integer.parseInt(jCmbBoxMatricula.getSelectedItem().toString())) {
